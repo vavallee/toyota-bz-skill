@@ -1,0 +1,106 @@
+{
+  "cars": [
+    {
+      "car_model": "Toyota: bZ 2027 (OBDonUDS)",
+      "init": "ATSP7;ATST96;",
+      "pids": [
+        {
+          "pid": "22F45B",
+          "pid_init": "ATSH18DA5AF1;",
+          "enabled": true,
+          "parameters": [
+            {
+              "name": "SOC",
+              "expression": "B7/2.55",
+              "unit": "%",
+              "class": "battery",
+              "period": "5000",
+              "min": "0",
+              "max": "100",
+              "type": "MQTT_Topic",
+              "send_to": "bz/soc",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "pid": "22F442",
+          "pid_init": "ATSH18DA5AF1;",
+          "enabled": true,
+          "parameters": [
+            {
+              "name": "LV_V",
+              "expression": "[B7:B8]/1000",
+              "unit": "V",
+              "class": "voltage",
+              "period": "5000",
+              "min": "5",
+              "max": "20",
+              "type": "MQTT_Topic",
+              "send_to": "bz/lv_v",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "pid": "22F446",
+          "pid_init": "ATSH18DA5AF1;",
+          "enabled": true,
+          "parameters": [
+            {
+              "name": "TMP_A",
+              "expression": "B7-40",
+              "unit": "°C",
+              "class": "temperature",
+              "period": "30000",
+              "min": "-40",
+              "max": "80",
+              "type": "MQTT_Topic",
+              "send_to": "bz/ambient",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "pid": "22F4A6",
+          "pid_init": "ATSH18DA5AF1;",
+          "enabled": true,
+          "parameters": [
+            {
+              "name": "ODOMETER",
+              "expression": "[B7:B10]/10",
+              "unit": "km",
+              "class": "distance",
+              "period": "30000",
+              "min": "0",
+              "max": "",
+              "type": "MQTT_Topic",
+              "send_to": "bz/odo_km",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "pid": "22F49A",
+          "pid_init": "ATSH18DA5AF1;",
+          "enabled": true,
+          "parameters": [
+            {
+              "name": "HV_V",
+              "expression": "((B10*256)+B15)*0.015625",
+              "unit": "V",
+              "class": "voltage",
+              "period": "5000",
+              "min": "100",
+              "max": "600",
+              "type": "MQTT_Topic",
+              "send_to": "bz/hv_v",
+              "enabled": true
+            }
+          ]
+        }
+      ],
+      "can_filters": []
+    }
+  ]
+}
