@@ -132,15 +132,33 @@ It publishes, every 5 s (30 s for temperature and odometer):
 
 ## 4. 12 V bus and dongle sleep
 
+Measured:
+
 - In READY the 12 V bus reads 14.3–14.5 V.
-- During AC (Level 2) charging with the car off, the dongle reported **12.90 V**.
-  A sleep threshold tuned for a car that holds the bus near 14 V while charging
-  (13.1 V in the previous setup) puts the dongle to sleep during a charge, so
-  it reports nothing exactly when the charge controller wants a reading.
-- Whether the control units `5A`/`62` answer while the car is off and charging
-  is **not yet tested**. Test that before lowering the sleep threshold or the
-  polling minimum voltage; polling a sleeping car is the usual cause of 12 V
-  battery drain with OBD dongles.
+- Three hours into an AC (Level 2) charge with the car off, the dongle read
+  **12.90 V** (one sample). This car does not hold the bus near 14 V while
+  charging, so a dongle with a sleep threshold of 13.1 V sleeps through a
+  charge and reports nothing during it.
+
+WiCAN settings that protect the 12 V battery (in use on the measured car):
+
+| Setting | Value | Reason |
+|---|---|---|
+| Sleep mode | enabled | Sleep current is under 1 mA per the wican-fw docs; awake, the dongle is a permanent load |
+| Sleep voltage | 13.1 V | wican-fw documented default; READY is 14.3+ V, car off is ~12.9 V |
+| Sleep after | 5 min | Firmware default |
+| Periodic wake up | **disabled** | wican-fw issue #691: each periodic wake brings the vehicle's control units up and pulls the 12 V bus down |
+| Automate low-voltage behaviour | "Pause PID polling only (Custom Voltage)" | With this set to "Disable" the dongle keeps sending requests to the car for the whole sleep delay after the car is switched off |
+| PID polling min voltage | 13.2 V | Just above the sleep voltage, so requests stop as soon as the bus is no longer being charged |
+
+Consequence: the battery level is known at arrival (car in READY, in WiFi
+range) and not updated while parked or charging. Hold the last value on the
+Home Assistant side (§5).
+
+Not tested: whether control units `5A`/`62` answer with the car off and
+locked, and what the 12 V bus does over hours if the dongle polls in that
+state. Measure both before lowering either voltage below ~12.9 V or enabling
+periodic wake up.
 
 ## 5. Home Assistant
 
